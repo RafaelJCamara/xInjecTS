@@ -5,21 +5,23 @@ import { Lifetime } from "./lifetime";
 class DependencyInjectionContainer {
     private dependencies = new Map<string, IDependency>();
 
-    registerDefault<T>(instance: T) {
-      this.dependencies.set((instance as any).constructor.name, {
-        value: instance,
-        lifetime: Lifetime.Scoped,
-      });
-    }
-
-    register<T>(token: string, instance: T) {
-      this.dependencies.set(token, {
-        value: instance,
-        lifetime: Lifetime.Scoped
-      });
+    register<T>(instance: T, token?: string, lifetime?: Lifetime) {
+      this.dependencies.set(
+        token ?? (instance as any).constructor.name, 
+        {
+          value: instance,
+          lifetime: lifetime ?? Lifetime.Transient
+        }
+      );
     }
   
-    resolve<T>(token: string): T {
+    resolve<T>(dependencyIdentifier: string | Constructor<T>) : T{
+      return typeof dependencyIdentifier === 'string' ? 
+        this.resolveProperty<T>(dependencyIdentifier) :
+        this.resolveCtor<T>(dependencyIdentifier);
+    }
+
+    private resolveProperty<T>(token: string): T {
       //TODO: Implement nested lifetime checks
 
       const dependency = this.dependencies.get(token);
@@ -29,7 +31,7 @@ class DependencyInjectionContainer {
       return dependency.value;
     }
 
-    resolveCtor<T>(constructor: Constructor<T>): T {
+    private resolveCtor<T>(constructor: Constructor<T>): T {
       //TODO: Implement nested lifetime checks
       
       const tokens: string[] = Reflect.getMetadata('design:inject', constructor) || [];
