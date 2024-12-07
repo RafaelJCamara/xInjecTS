@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+import { GenericConstructor } from "../_shared/types";
 import { IDependency } from "./dependency";
 import { Lifetime } from "./lifetime";
 
@@ -5,13 +7,16 @@ import { Lifetime } from "./lifetime";
 class DependencyInjectionContainer {
     private dependencies = new Map<string, IDependency>();
 
-    register<T>(instance: T, token?: string, lifetime?: Lifetime) {
+    register<T extends GenericConstructor>(instance: T, token?: string, lifetime?: Lifetime) {
+      const tokenFinal = token ?? (new instance() as any).constructor.name
+      const dependency =         {
+          value: lifetime === Lifetime.Singleton ? new instance() : instance,
+          lifetime: lifetime ?? Lifetime.Scoped
+        };
+
       this.dependencies.set(
-        token ?? (instance as any).constructor.name, 
-        {
-          value: instance,
-          lifetime: lifetime ?? Lifetime.Transient
-        }
+        tokenFinal, 
+        dependency
       );
     }
   
@@ -28,7 +33,8 @@ class DependencyInjectionContainer {
       if (!dependency) {
         throw new Error(`No dependency found for token: ${token}`);
       }
-      return dependency.value;
+
+      return  dependency.lifetime === Lifetime.Singleton?  dependency.value : new dependency.value();
     }
 
     private resolveCtor<T>(constructor: Constructor<T>): T {
@@ -40,13 +46,12 @@ class DependencyInjectionContainer {
         if (!dependency) {
           throw new Error(`No dependency found for token: ${token}`);
         }
-        return dependency.value;
+        return dependency.lifetime === Lifetime.Singleton?  dependency.value : new dependency.value();
       });
       return new constructor(...args);
     }
-
   }
-
-  type Constructor<T = any> = new (...args: any[]) => T;
   
-  export const xContainer = new DependencyInjectionContainer();
+type Constructor<T = any> = new (...args: any[]) => T;
+
+export const xContainer = new DependencyInjectionContainer();
