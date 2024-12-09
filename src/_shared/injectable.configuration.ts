@@ -10,12 +10,12 @@ export interface IInjectableConfiguration {
     lifetime: Lifetime;
 
     /**
-     * Optional identifier for the resolver.
+     * Interface that can be used to resolve the injectable.
      */
     resolvedBy?: string;
 
     /**
-     * Optional token for the injectable.
+     * Optional unique token for the injectable.
      */
     token?: string;
 }
