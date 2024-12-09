@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
+import { IInjectableConfiguration } from "../_shared/injectable.configuration";
 import { GenericConstructor } from "../_shared/types";
 import { IDependency } from "./dependency";
 import { Lifetime } from "./lifetime";
@@ -7,17 +8,23 @@ import { Lifetime } from "./lifetime";
 class DependencyInjectionContainer {
     private dependencies = new Map<string, IDependency>();
 
-    register<T extends GenericConstructor>(instance: T, token?: string, lifetime?: Lifetime) {
-      const tokenFinal = token ?? (new instance() as any).constructor.name
-      const dependency =         {
-          value: lifetime === Lifetime.Singleton ? new instance() : instance,
-          lifetime: lifetime ?? Lifetime.Scoped
-        };
+    register<T extends GenericConstructor>(instance: T, dependencyConfiguration: IInjectableConfiguration) {
+      const dependency = {
+          value: dependencyConfiguration.lifetime === Lifetime.Singleton ? new instance() : instance,
+          lifetime: dependencyConfiguration.lifetime ?? Lifetime.Scoped
+      };
 
       this.dependencies.set(
-        tokenFinal, 
-        dependency
+          dependencyConfiguration.token ?? (new instance() as any).constructor.name, 
+          dependency
       );
+
+      if(dependencyConfiguration.resolvedBy){
+        this.dependencies.set(
+          dependencyConfiguration.resolvedBy, 
+          dependency
+        );
+      }
     }
   
     resolve<T>(dependencyIdentifier: string | Constructor<T>) : T{
