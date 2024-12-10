@@ -2,25 +2,25 @@ import { xContainer } from "../container/di-container";
 import "reflect-metadata";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export function Inject(identifier?: string) {
+export function Inject(token?: string) {
   return function (target: any, propertyKey?: string | symbol, parameterIndex?: number) {
     if (typeof parameterIndex === "number") {
-      const resolvedIdentifier = identifier || resolveFromConstructor(target, parameterIndex);
-      ApplyConstructorInjection(resolvedIdentifier, target, parameterIndex);
+      const resolvedToken = token || resolveFromConstructor(target, parameterIndex);
+      applyConstructorInjection(resolvedToken, target, parameterIndex);
     } else {
-      const resolvedIdentifier = identifier || resolveIdentifierFromType(target, propertyKey);
-      ApplyPropertyInjection(resolvedIdentifier, target, propertyKey!);
+      const resolvedToken = token || resolveIdentifierFromType(target, propertyKey);
+      applyPropertyInjection(resolvedToken, target, propertyKey!);
     }
   };
 }
 
-function ApplyConstructorInjection(identifier: string, target: any, parameterIndex: number) {
+function applyConstructorInjection(identifier: string, target: any, parameterIndex: number) {
   const existingInjectedParams = Reflect.getMetadata("design:inject", target) || [];
   existingInjectedParams[parameterIndex] = identifier;
   Reflect.defineMetadata("design:inject", existingInjectedParams, target);
 }
 
-function ApplyPropertyInjection(identifier: string, target: any, propertyKey: string | symbol) {
+function applyPropertyInjection(identifier: string, target: any, propertyKey: string | symbol) {
   Object.defineProperty(target, propertyKey, {
     get: () => xContainer.resolve(identifier),
     enumerable: true,
