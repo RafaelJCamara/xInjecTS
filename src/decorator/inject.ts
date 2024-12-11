@@ -2,25 +2,31 @@ import { xContainer } from "../container/di-container";
 import "reflect-metadata";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export function Inject(token?: string) {
+export function Inject(token?: any) {
   return function (target: any, propertyKey?: string | symbol, parameterIndex?: number) {
     if (typeof parameterIndex === "number") {
+        if(token){
+        token = typeof token === "string" || typeof token === "symbol" ? token : resolveIdentifierFromConstructorType(target, parameterIndex);
+      }
       const resolvedToken = token || resolveFromConstructor(target, parameterIndex);
       applyConstructorInjection(resolvedToken, target, parameterIndex);
     } else {
-      const resolvedToken = token || resolveIdentifierFromType(target, propertyKey);
+      if(token){
+        token = typeof token === "string" ? token : resolveIdentifierFromType(target, propertyKey!);
+      }
+      const resolvedToken = token || resolveIdentifierFromType(target, propertyKey!);
       applyPropertyInjection(resolvedToken, target, propertyKey!);
     }
   };
 }
 
-function applyConstructorInjection(identifier: string, target: any, parameterIndex: number) {
+function applyConstructorInjection(identifier: any, target: any, parameterIndex: number) {
   const existingInjectedParams = Reflect.getMetadata("design:inject", target) || [];
   existingInjectedParams[parameterIndex] = identifier;
   Reflect.defineMetadata("design:inject", existingInjectedParams, target);
 }
 
-function applyPropertyInjection(identifier: string, target: any, propertyKey: string | symbol) {
+function applyPropertyInjection(identifier: any, target: any, propertyKey: string | symbol) {
   Object.defineProperty(target, propertyKey, {
     get: () => xContainer.resolve(identifier),
     enumerable: true,
@@ -28,22 +34,17 @@ function applyPropertyInjection(identifier: string, target: any, propertyKey: st
   });
 }
 
-
-function resolveIdentifierFromType(target: any, propertyKey?: string | symbol): string {
-  if (!propertyKey) {
-    throw new Error("Property key is required to resolve type metadata.");
-  }
-
-  const type = Reflect.getMetadata("design:type", target, propertyKey);
-  if (!type) {
-    throw new Error(`Type metadata for property ${String(propertyKey)} is not available.`);
-  }
-
-  return type.name;
+function resolveFromConstructor(target: any, parameterIndex: number): any {
+  const types = Reflect.getMetadata("design:paramtypes", target);
+  return types[parameterIndex].name;
 }
 
+function resolveIdentifierFromType(target: any, propertyKey: string | symbol): any {
+  const type = Reflect.getMetadata("design:type", target, propertyKey);
+  return type;
+}
 
-function resolveFromConstructor(target: any, parameterIndex: number): string {
-  const type = Reflect.getMetadata("design:paramtypes", target)[parameterIndex];
-  return type.name;
+function resolveIdentifierFromConstructorType(target: any, parameterIndex: number): any {
+  const types = Reflect.getMetadata("design:paramtypes", target);
+  return types[parameterIndex].name;
 }
