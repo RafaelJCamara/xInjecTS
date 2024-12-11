@@ -7,7 +7,6 @@ import { Lifetime } from "../container/lifetime";
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-//TODO: add configuration object that has the lifetime and the interface implemented by this class
 export function Injectable<T extends GenericConstructor>(overrides: Partial<IInjectableConfiguration> = {}) {
     const configuration = { ...defaultInjectableConfiguration, ...overrides };
     return function (constructor: T) {

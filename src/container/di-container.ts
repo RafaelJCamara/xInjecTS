@@ -6,16 +6,21 @@ import { Lifetime } from "./lifetime";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 class DependencyInjectionContainer {
-    private dependencies = new Map<string, IDependency>();
+    private readonly dependencies = new Map<string, IDependency>();
 
     register<T extends GenericConstructor>(instance: T, dependencyConfiguration: IInjectableConfiguration) {
+      const token = dependencyConfiguration.token ?? (new instance() as any).constructor.name;
+      if (this.dependencies.has(token)) {
+        throw new Error(`Dependency with token ${token} is already registered`);
+      }
+
       const dependency = {
           value: dependencyConfiguration.lifetime === Lifetime.Singleton ? new instance() : instance,
           lifetime: dependencyConfiguration.lifetime ?? Lifetime.Scoped
       };
 
       this.dependencies.set(
-          dependencyConfiguration.token ?? (new instance() as any).constructor.name, 
+          token, 
           dependency
       );
 
@@ -46,7 +51,6 @@ class DependencyInjectionContainer {
 
     private resolveCtor<T>(constructor: Constructor<T>): T {
       //TODO: Implement nested lifetime checks
-      
       const tokens: string[] = Reflect.getMetadata('design:inject', constructor) || [];
       const args = tokens.map((token) => {
         const dependency = this.dependencies.get(token);
