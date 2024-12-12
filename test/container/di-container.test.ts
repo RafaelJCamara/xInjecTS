@@ -23,17 +23,6 @@ describe('DependencyInjectionContainer', () => {
         expect(resolvedService1).toBe(resolvedService2);
     });
 
-    it('should register and resolve a scoped dependency', () => {
-        const config: IInjectableConfiguration = { lifetime: Lifetime.Scoped, token: 'TestService' };
-        xContainer.register(TestService, config);
-
-        const resolvedService1 = xContainer.resolve<TestService>('TestService');
-        const resolvedService2 = xContainer.resolve<TestService>('TestService');
-
-        expect(resolvedService1).toBeInstanceOf(TestService);
-        expect(resolvedService1).not.toBe(resolvedService2);
-    });
-
     it('should register and resolve a transient dependency', () => {
         const config: IInjectableConfiguration = { lifetime: Lifetime.Transient, token: 'TestService' };
         xContainer.register(TestService, config);

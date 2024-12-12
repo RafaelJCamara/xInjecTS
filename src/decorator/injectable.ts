@@ -15,5 +15,5 @@ export function Injectable<T extends GenericConstructor>(overrides: Partial<IInj
 }
 
 const defaultInjectableConfiguration: IInjectableConfiguration = {
-    lifetime: Lifetime.Scoped
+    lifetime: Lifetime.Singleton
 };

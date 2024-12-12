@@ -16,7 +16,7 @@ class DependencyInjectionContainer {
 
       const dependency = {
           value: dependencyConfiguration.lifetime === Lifetime.Singleton ? new instance() : instance,
-          lifetime: dependencyConfiguration.lifetime ?? Lifetime.Scoped
+          lifetime: dependencyConfiguration.lifetime
       };
 
       this.dependencies.set(
