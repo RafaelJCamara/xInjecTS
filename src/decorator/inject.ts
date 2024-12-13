@@ -1,23 +1,28 @@
+import { InjectionKey } from "../_shared/types";
 import { xContainer } from "../container/di-container";
 import "reflect-metadata";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export function Inject(token?: any) {
-  return function (target: any, propertyKey?: string | symbol, parameterIndex?: number) {
+  return function (target: any, propertyKey?: InjectionKey, parameterIndex?: number) {
     if (typeof parameterIndex === "number") {
         if(token){
-        token = typeof token === "string" || typeof token === "symbol" ? token : resolveIdentifierFromConstructorType(target, parameterIndex);
+        token = isValidInjectionTokenType(token) ? token : resolveIdentifierFromConstructorType(target, parameterIndex);
       }
       const resolvedToken = token || resolveFromConstructor(target, parameterIndex);
       applyConstructorInjection(resolvedToken, target, parameterIndex);
     } else {
       if(token){
-        token = typeof token === "string" ? token : resolveIdentifierFromType(target, propertyKey!);
+        token = isValidInjectionTokenType(token) ? token : resolveIdentifierFromType(target, propertyKey!);
       }
       const resolvedToken = token || resolveIdentifierFromType(target, propertyKey!);
       applyPropertyInjection(resolvedToken, target, propertyKey!);
     }
   };
+}
+
+function isValidInjectionTokenType(token: any) {
+  return typeof token === "string" || typeof token === "symbol";
 }
 
 function applyConstructorInjection(identifier: any, target: any, parameterIndex: number) {

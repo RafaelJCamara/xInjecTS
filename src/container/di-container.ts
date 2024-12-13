@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 import { IInjectableConfiguration } from "../_shared/injectable.configuration";
-import { GenericConstructor } from "../_shared/types";
+import { GenericConstructor, InjectionKey } from "../_shared/types";
 import { IDependency } from "./dependency";
 import { Lifetime } from "./lifetime";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 class DependencyInjectionContainer {
-    private readonly dependencies = new Map<string, IDependency>();
+    private readonly dependencies = new Map<InjectionKey, IDependency>();
 
     register<T extends GenericConstructor>(instance: T, dependencyConfiguration: IInjectableConfiguration) {
       const token = dependencyConfiguration.token ?? (new instance() as any).constructor.name;
@@ -32,18 +32,18 @@ class DependencyInjectionContainer {
       }
     }
   
-    resolve<T>(dependencyIdentifier: string | Constructor<T>) : T{
+    resolve<T>(dependencyIdentifier: InjectionKey | Constructor<T>) : T{
       return typeof dependencyIdentifier === 'string' ? 
         this.resolveProperty<T>(dependencyIdentifier) :
-        this.resolveCtor<T>(dependencyIdentifier);
+        this.resolveCtor<T>(dependencyIdentifier as  Constructor<T>);
     }
 
-    private resolveProperty<T>(token: string): T {
+    private resolveProperty<T>(token: InjectionKey): T {
       //TODO: Implement nested lifetime checks
 
       const dependency = this.dependencies.get(token);
       if (!dependency) {
-        throw new Error(`No dependency found for token: ${token}`);
+        throw new Error(`No dependency found for token: ${String(token)}`);
       }
 
       return  dependency.lifetime === Lifetime.Singleton?  dependency.value : new dependency.value();
@@ -51,11 +51,11 @@ class DependencyInjectionContainer {
 
     private resolveCtor<T>(constructor: Constructor<T>): T {
       //TODO: Implement nested lifetime checks
-      const tokens: string[] = Reflect.getMetadata('design:inject', constructor) || [];
+      const tokens: InjectionKey[] = Reflect.getMetadata('design:inject', constructor) || [];
       const args = tokens.map((token) => {
         const dependency = this.dependencies.get(token);
         if (!dependency) {
-          throw new Error(`No dependency found for token: ${token}`);
+          throw new Error(`No dependency found for token: ${String(token)}`);
         }
         return dependency.lifetime === Lifetime.Singleton?  dependency.value : new dependency.value();
       });

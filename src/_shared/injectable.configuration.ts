@@ -1,4 +1,5 @@
 import { Lifetime } from "../container/lifetime";
+import { InjectionKey } from "./types";
 
 /**
  * Interface representing the configuration for an injectable.
@@ -10,12 +11,12 @@ export interface IInjectableConfiguration {
     lifetime: Lifetime;
 
     /**
-     * Interface that can be used to resolve the injectable.
+     * Token that represents an interface that can be used to resolve this injectable.
      */
-    resolvedBy?: string;
+    resolvedBy?: InjectionKey;
 
     /**
      * Optional unique token for the injectable.
      */
-    token?: string;
+    token?: InjectionKey;
 }
