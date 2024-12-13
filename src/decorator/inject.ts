@@ -22,7 +22,7 @@ export function Inject(token?: any) {
 }
 
 function isValidInjectionTokenType(token: any) {
-  return typeof token === "string" || typeof token === "symbol";
+  return typeof token === "string";
 }
 
 function applyConstructorInjection(identifier: any, target: any, parameterIndex: number) {
@@ -31,7 +31,7 @@ function applyConstructorInjection(identifier: any, target: any, parameterIndex:
   Reflect.defineMetadata("design:inject", existingInjectedParams, target);
 }
 
-function applyPropertyInjection(identifier: any, target: any, propertyKey: string | symbol) {
+function applyPropertyInjection(identifier: any, target: any, propertyKey: string) {
   Object.defineProperty(target, propertyKey, {
     get: () => xContainer.resolve(identifier),
     enumerable: true,
@@ -44,7 +44,7 @@ function resolveFromConstructor(target: any, parameterIndex: number): any {
   return types[parameterIndex].name;
 }
 
-function resolveIdentifierFromType(target: any, propertyKey: string | symbol): any {
+function resolveIdentifierFromType(target: any, propertyKey: string): any {
   const type = Reflect.getMetadata("design:type", target, propertyKey);
   return type;
 }

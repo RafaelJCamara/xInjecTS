@@ -2,4 +2,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type GenericConstructor = { new (...args: any[]): {} };
 
-export type InjectionKey = string | symbol;
+export type InjectionKey = string;
