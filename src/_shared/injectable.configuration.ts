@@ -11,7 +11,7 @@ export interface IInjectableConfiguration {
     lifetime: Lifetime;
 
     /**
-     * Token that represents an interface that can be used to resolve this injectable.
+     * Optional token that represents an interface that can be used to resolve this injectable.
      */
     resolvedBy?: InjectionKey;
 
