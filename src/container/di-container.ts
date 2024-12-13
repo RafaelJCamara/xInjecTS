@@ -14,8 +14,24 @@ class DependencyInjectionContainer {
         throw new Error(`Dependency with token ${token} is already registered`);
       }
 
+      if(dependencyConfiguration.lifetime !== Lifetime.Singleton && dependencyConfiguration.useFactory){
+        throw new Error("You can only use a factory with singleton lifetime.");
+      }
+
+      let instanceToResolve:any;
+
+      if(dependencyConfiguration.lifetime === Lifetime.Singleton){
+        if(dependencyConfiguration.useFactory){
+          instanceToResolve = dependencyConfiguration.useFactory();
+        }else{
+          instanceToResolve = new instance();
+        }
+      }else{
+        instanceToResolve = instance;
+      }
+      
       const dependency = {
-          value: dependencyConfiguration.lifetime === Lifetime.Singleton ? new instance() : instance,
+          value: instanceToResolve,
           lifetime: dependencyConfiguration.lifetime
       };
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Lifetime } from "../container/lifetime";
 import { InjectionKey } from "./types";
 
@@ -19,4 +20,6 @@ export interface IInjectableConfiguration {
      * Optional unique token for the injectable.
      */
     token?: InjectionKey;
+
+    useFactory?: () => any;
 }

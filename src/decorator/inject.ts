@@ -16,6 +16,7 @@ export function Inject(token?: any) {
         token = isValidInjectionTokenType(token) ? token : resolveIdentifierFromType(target, propertyKey!);
       }
       const resolvedToken = token || resolveIdentifierFromType(target, propertyKey!);
+      console.log("resolvedToken", resolvedToken);
       applyPropertyInjection(resolvedToken, target, propertyKey!);
     }
   };
@@ -46,7 +47,7 @@ function resolveFromConstructor(target: any, parameterIndex: number): any {
 
 function resolveIdentifierFromType(target: any, propertyKey: string): any {
   const type = Reflect.getMetadata("design:type", target, propertyKey);
-  return type;
+  return type.name;
 }
 
 function resolveIdentifierFromConstructorType(target: any, parameterIndex: number): any {

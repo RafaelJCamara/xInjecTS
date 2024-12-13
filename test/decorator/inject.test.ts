@@ -39,7 +39,7 @@ describe("@Inject Decorator", () => {
 
         expect(testClass.dep).toBeDefined();
         expect(testClass.dep).toBeInstanceOf(Dependency);
-        expect(xContainer.resolve).toHaveBeenCalledWith(Dependency);
+        expect(xContainer.resolve).toHaveBeenCalledWith("Dependency");
     });
 
     it("should inject dependency via parameter with custom token", () => {
@@ -81,5 +81,83 @@ describe("@Inject Decorator", () => {
         expect(testClass.dep).toBeDefined();
         expect(testClass.dep).toBeInstanceOf(Dependency);
         expect(xContainer.resolve).toHaveBeenCalledWith("IDependency");
+    });
+});
+
+
+describe("@Inject Decorator with Factory", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        xContainer["dependencies"].clear();
+    });
+
+    it("[default @Inject] should inject dependency resolved by factory", () => {
+        @Injectable({
+            useFactory: () => new ServiceB(123)
+        })
+        class ServiceB{
+            myA!: number;
+            constructor(a:number){
+                this.myA = a;
+            }   
+        }
+
+        class TestClassB{
+            @Inject()
+            testProperty!: ServiceB;
+        }
+
+        const testClassB = new TestClassB();
+
+        expect(testClassB.testProperty).toBeDefined();
+        expect(testClassB.testProperty).toBeInstanceOf(ServiceB);
+        expect(testClassB.testProperty.myA).toBe(123);
+    });
+
+    it("[@Inject with type] should inject dependency resolved by factory", () => {
+        @Injectable({
+            useFactory: () => new ServiceB(456)
+        })
+        class ServiceB{
+            myA!: number;
+            constructor(a:number){
+                this.myA = a;
+            }   
+        }
+
+        class TestClassB{
+            @Inject(ServiceB)
+            testProperty!: ServiceB;
+        }
+
+        const testClassB = new TestClassB();
+
+        expect(testClassB.testProperty).toBeDefined();
+        expect(testClassB.testProperty).toBeInstanceOf(ServiceB);
+        expect(testClassB.testProperty.myA).toBe(456);
+    });
+
+    it("[@Inject with token] should inject dependency resolved by factory", () => {
+        @Injectable({
+            token: "my-token",
+            useFactory: () => new ServiceB(789)
+        })
+        class ServiceB{
+            myA!: number;
+            constructor(a:number){
+                this.myA = a;
+            }   
+        }
+
+        class TestClassB{
+            @Inject("my-token")
+            testProperty!: ServiceB;
+        }
+
+        const testClassB = new TestClassB();
+
+        expect(testClassB.testProperty).toBeDefined();
+        expect(testClassB.testProperty).toBeInstanceOf(ServiceB);
+        expect(testClassB.testProperty.myA).toBe(789);
     });
 });
