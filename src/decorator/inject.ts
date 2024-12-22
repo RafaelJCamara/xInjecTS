@@ -16,7 +16,6 @@ export function Inject(token?: any) {
         token = isValidInjectionTokenType(token) ? token : resolveIdentifierFromType(target, propertyKey!);
       }
       const resolvedToken = token || resolveIdentifierFromType(target, propertyKey!);
-      console.log("resolvedToken", resolvedToken);
       applyPropertyInjection(resolvedToken, target, propertyKey!);
     }
   };

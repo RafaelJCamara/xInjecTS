@@ -47,7 +47,6 @@ describe('Injectable Decorator', () => {
 
         const registration2 = xContainer.resolve(TestClass);
         expect(registration2).toBeDefined();
-        console.log("Same reference: ", registration1 === registration2);
     });
 
     it('should throw an error if the class is already registered', () => {
