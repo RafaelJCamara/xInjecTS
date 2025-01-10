@@ -1,6 +1,6 @@
 {
-  "name": "xinjectts",
-  "version": "1.0.0",
+  "name": "test-pkg",
+  "version": "0.0.1",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -167,7 +167,7 @@
     "lint": "npx eslint src/"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "author": "Rafael Camara",
+  "license": "MIT",
+  "description": "test description"
 }
