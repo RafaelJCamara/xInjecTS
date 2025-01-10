@@ -178,5 +178,9 @@
   "keywords": [],
   "author": "Rafael Camara",
   "license": "MIT",
-  "description": "test description"
+  "description": "test description",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RafaelJCamara/xInjecTS.git"
+  }
 }
