@@ -2,6 +2,9 @@
   "name": "@rafaeljcamara/test-pkg",
   "version": "0.0.1",
   "main": "index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "directories": {
     "test": "test"
   },
