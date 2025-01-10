@@ -1,14 +1,5 @@
-import { Inject } from "./decorator/inject";
-import { Injectable } from "./decorator/injectable";
-
-    @Injectable()
-    class ServiceA{
-
-    }
-
-    class TestClass {
-        @Inject()
-        testProperty!: ServiceA;
-    }
-
-    new TestClass();
+export { Injectable } from './decorator/injectable';
+export { Inject } from './decorator/inject';
+export { xContainer } from './container/di-container';
+export { Lifetime } from './container/lifetime';
+export type { IInjectableConfiguration } from './_shared/injectable.configuration';
