@@ -1,6 +1,5 @@
 {
-  "name": "@rafaeljcamara/test-pkg",
-  "version": "0.0.1",
+  "name": "@rafaeljcamara/xinjects",
   "main": "index.js",
   "publishConfig": {
     "access": "public"
@@ -175,12 +174,23 @@
     "prepare": "husky",
     "lint": "npx eslint src/"
   },
-  "keywords": [],
+  "keywords": [
+    "dependency injection", 
+    "typescript", 
+    "decorators", 
+    "injection", 
+    "dependency", 
+    "container"
+  ],
   "author": "Rafael Camara",
   "license": "MIT",
-  "description": "test description",
+  "description": "Lightweight dependency injection container for TypeScript",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/RafaelJCamara/xInjecTS.git"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/RafaelJCamara/xInjecTS/issues"
+  },
+  "homepage": "https://github.com/RafaelJCamara/xInjecTS#readme"
 }
