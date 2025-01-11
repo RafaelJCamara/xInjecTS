@@ -21,7 +21,7 @@
     "chalk": "^5.3.0",
     "cliui": "^8.0.1",
     "color-convert": "^2.0.1",
-    "color-name": "^1.1.4",
+    "color-name": "^2.0.0",
     "compare-func": "^2.0.0",
     "concat-map": "^0.0.1",
     "conventional-changelog-angular": "^7.0.0",
