@@ -1,6 +1,5 @@
 {
   "name": "@rafaeljcamara/xinjects",
-  "main": "index.js",
   "publishConfig": {
     "access": "public"
   },
@@ -158,6 +157,7 @@
     "@semantic-release/github": "^11.0.1",
     "@semantic-release/npm": "^12.0.1",
     "@semantic-release/release-notes-generator": "^14.0.3",
+    "@swc/core": "^1.10.7",
     "@types/jest": "^29.5.14",
     "eslint": "^9.16.0",
     "globals": "^15.13.0",
@@ -166,20 +166,22 @@
     "semantic-release": "^24.2.1",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
+    "tsup": "^8.3.5",
     "typescript": "4.9.5",
     "typescript-eslint": "^8.17.0"
   },
   "scripts": {
     "test": "jest",
     "prepare": "husky",
-    "lint": "npx eslint src/"
+    "lint": "npx eslint src/",
+    "build": "tsup"
   },
   "keywords": [
-    "dependency injection", 
-    "typescript", 
-    "decorators", 
-    "injection", 
-    "dependency", 
+    "dependency injection",
+    "typescript",
+    "decorators",
+    "injection",
+    "dependency",
     "container"
   ],
   "author": "Rafael Camara",
@@ -192,5 +194,13 @@
   "bugs": {
     "url": "https://github.com/RafaelJCamara/xInjecTS/issues"
   },
-  "homepage": "https://github.com/RafaelJCamara/xInjecTS#readme"
+  "homepage": "https://github.com/RafaelJCamara/xInjecTS#readme",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts"
 }
