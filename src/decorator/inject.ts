@@ -1,24 +1,36 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { InjectionKey } from "../_shared/types";
 import { xContainer } from "../container/di-container";
 import "reflect-metadata";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export function Inject(token?: any) {
   return function (target: any, propertyKey?: InjectionKey, parameterIndex?: number) {
-    if (typeof parameterIndex === "number") {
-        if(token){
-        token = isValidInjectionTokenType(token) ? token : resolveIdentifierFromConstructorType(target, parameterIndex);
-      }
-      const resolvedToken = token || resolveFromConstructor(target, parameterIndex);
-      applyConstructorInjection(resolvedToken, target, parameterIndex);
-    } else {
-      if(token){
-        token = isValidInjectionTokenType(token) ? token : resolveIdentifierFromType(target, propertyKey!);
-      }
-      const resolvedToken = token || resolveIdentifierFromType(target, propertyKey!);
-      applyPropertyInjection(resolvedToken, target, propertyKey!);
-    }
+    if (isInjectionInConstructor(parameterIndex))
+        injectInConstructor(token, target, parameterIndex);
+    else
+        injectInProperty(token, target, propertyKey);
   };
+}
+
+function injectInProperty(token: any, target: any, propertyKey?: string) {
+  if (token) {
+    token = isValidInjectionTokenType(token) ? token : resolveIdentifierFromType(target, propertyKey!);
+  }
+  const resolvedToken = token || resolveIdentifierFromType(target, propertyKey!);
+  applyPropertyInjection(resolvedToken, target, propertyKey!);
+}
+
+function injectInConstructor(token: any, target: any, parameterIndex?: number) {
+  if (token) {
+    token = isValidInjectionTokenType(token) ? token : resolveFromConstructor(target, parameterIndex!);
+  }
+  const resolvedToken = token || resolveFromConstructor(target, parameterIndex!);
+  applyConstructorInjection(resolvedToken, target, parameterIndex!);
+}
+
+function isInjectionInConstructor(parameterIndex?: number):boolean{
+  return typeof parameterIndex === "number";
 }
 
 function isValidInjectionTokenType(token: any) {
@@ -47,9 +59,4 @@ function resolveFromConstructor(target: any, parameterIndex: number): any {
 function resolveIdentifierFromType(target: any, propertyKey: string): any {
   const type = Reflect.getMetadata("design:type", target, propertyKey);
   return type.name;
-}
-
-function resolveIdentifierFromConstructorType(target: any, parameterIndex: number): any {
-  const types = Reflect.getMetadata("design:paramtypes", target);
-  return types[parameterIndex].name;
 }

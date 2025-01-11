@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { IInjectableConfiguration } from "../_shared/injectable.configuration";
 import { GenericConstructor, InjectionKey } from "../_shared/types";
 import { IDependency } from "./dependency";
 import { Lifetime } from "./lifetime";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 class DependencyInjectionContainer {
     private readonly dependencies = new Map<InjectionKey, IDependency>();
 
@@ -18,20 +18,8 @@ class DependencyInjectionContainer {
         throw new Error("You can only use a factory with singleton lifetime.");
       }
 
-      let instanceToResolve:any;
-
-      if(dependencyConfiguration.lifetime === Lifetime.Singleton){
-        if(dependencyConfiguration.useFactory){
-          instanceToResolve = dependencyConfiguration.useFactory();
-        }else{
-          instanceToResolve = new instance();
-        }
-      }else{
-        instanceToResolve = instance;
-      }
-      
       const dependency = {
-          value: instanceToResolve,
+          value: this.getInstanceToResolve(dependencyConfiguration, instance),
           lifetime: dependencyConfiguration.lifetime
       };
 
@@ -54,9 +42,8 @@ class DependencyInjectionContainer {
         this.resolveCtor<T>(dependencyIdentifier as  Constructor<T>);
     }
 
-    private resolveProperty<T>(token: InjectionKey): T {
-      //TODO: Implement nested lifetime checks
 
+    private resolveProperty<T>(token: InjectionKey): T {
       const dependency = this.dependencies.get(token);
       if (!dependency) {
         throw new Error(`No dependency found for token: ${String(token)}`);
@@ -66,7 +53,6 @@ class DependencyInjectionContainer {
     }
 
     private resolveCtor<T>(constructor: Constructor<T>): T {
-      //TODO: Implement nested lifetime checks
       const tokens: InjectionKey[] = Reflect.getMetadata('design:inject', constructor) || [];
       const args = tokens.map((token) => {
         const dependency = this.dependencies.get(token);
@@ -76,6 +62,17 @@ class DependencyInjectionContainer {
         return dependency.lifetime === Lifetime.Singleton?  dependency.value : new dependency.value();
       });
       return new constructor(...args);
+    }
+
+    private getInstanceToResolve<T extends GenericConstructor>(dependencyConfiguration: IInjectableConfiguration, instance: T) {
+      let instanceToResolve: any;
+
+      if (dependencyConfiguration.lifetime === Lifetime.Singleton) {
+        instanceToResolve = dependencyConfiguration.useFactory ? dependencyConfiguration.useFactory() : new instance();
+      } else {
+        instanceToResolve = instance;
+      }
+      return instanceToResolve;
     }
   }
   
