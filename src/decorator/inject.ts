@@ -4,6 +4,22 @@ import { InjectionKey } from "../_shared/types";
 import { xContainer } from "../container/di-container";
 import "reflect-metadata";
 
+/**
+ * Decorator that injects a dependency into a class property or constructor parameter.
+ *
+ * @param token - The token to identify the dependency to be injected. If not provided, the type of the property or parameter will be used.
+ * @returns A function that performs the injection.
+ *
+ * @example
+ * ```typescript
+ * class MyClass {
+ *   @Inject(MyService)
+ *   private myService: MyService;
+ *
+ *   constructor(@Inject(OtherService) private otherService: OtherService) {}
+ * }
+ * ```
+ */
 export function Inject(token?: any) {
   return function (target: any, propertyKey?: InjectionKey, parameterIndex?: number) {
     if (isInjectionInConstructor(parameterIndex))

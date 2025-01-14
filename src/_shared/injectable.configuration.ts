@@ -22,5 +22,11 @@ export interface IInjectableConfiguration {
      */
     token?: InjectionKey;
 
+    /**
+     * Optional factory function to create the injectable.
+     * Use this factory whenever:
+     *  - you want to have a custom way os creating objects that must be injected
+     *  - the object has in its constructor a parameter that is not registered in the container (ex. integer)
+     */
     useFactory?: () => any;
 }

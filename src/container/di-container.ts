@@ -8,6 +8,15 @@ import { Lifetime } from "./lifetime";
 class DependencyInjectionContainer {
     private readonly dependencies = new Map<InjectionKey, IDependency>();
 
+    /**
+     * Registers a dependency in the DI container.
+     *
+     * @template T - The type of the instance to register, which extends `GenericConstructor`.
+     * @param {T} instance - The instance of the dependency to register.
+     * @param {IInjectableConfiguration} dependencyConfiguration - The configuration for the dependency.
+     * @throws {Error} If a dependency with the same token is already registered.
+     * @throws {Error} If a factory is used with a non-singleton lifetime.
+     */
     register<T extends GenericConstructor>(instance: T, dependencyConfiguration: IInjectableConfiguration) {
       const token = dependencyConfiguration.token ?? (new instance() as any).constructor.name;
       if (this.dependencies.has(token)) {
@@ -36,6 +45,14 @@ class DependencyInjectionContainer {
       }
     }
   
+    /**
+     * Resolves a dependency based on the provided identifier.
+     *
+     * @template T - The type of the dependency to resolve.
+     * @param {InjectionKey | Constructor<T>} dependencyIdentifier - The identifier of the dependency to resolve. 
+     * This can either be a string key or a constructor function.
+     * @returns {T} - The resolved dependency instance.
+     */
     resolve<T>(dependencyIdentifier: InjectionKey | Constructor<T>) : T{
       return typeof dependencyIdentifier === 'string' ? 
         this.resolveProperty<T>(dependencyIdentifier) :
@@ -78,4 +95,8 @@ class DependencyInjectionContainer {
   
 type Constructor<T = any> = new (...args: any[]) => T;
 
+/**
+ * The `xContainer` is an instance of the `DependencyInjectionContainer` class.
+ * It serves as the main container for managing dependency injection within the application.
+ */
 export const xContainer = new DependencyInjectionContainer();
