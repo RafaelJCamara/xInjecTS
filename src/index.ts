@@ -4,4 +4,4 @@ export { Inject } from './decorator/inject';
 export { xContainer } from './container/di-container';
 export { Lifetime } from './container/lifetime';
 export type { IInjectableConfiguration } from './_shared/injectable.configuration';
-export {IDependency} from './container/dependency';
+export type { IDependency } from './container/dependency';
