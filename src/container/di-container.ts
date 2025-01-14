@@ -15,16 +15,11 @@ class DependencyInjectionContainer {
      * @param {T} instance - The instance of the dependency to register.
      * @param {IInjectableConfiguration} dependencyConfiguration - The configuration for the dependency.
      * @throws {Error} If a dependency with the same token is already registered.
-     * @throws {Error} If a factory is used with a non-singleton lifetime.
      */
     register<T extends GenericConstructor>(instance: T, dependencyConfiguration: IInjectableConfiguration) {
       const token = dependencyConfiguration.token ?? (new instance() as any).constructor.name;
       if (this.dependencies.has(token)) {
         throw new Error(`Dependency with token ${token} is already registered`);
-      }
-
-      if(dependencyConfiguration.lifetime !== Lifetime.Singleton && dependencyConfiguration.useFactory){
-        throw new Error("You can only use a factory with singleton lifetime.");
       }
 
       const dependency = {
