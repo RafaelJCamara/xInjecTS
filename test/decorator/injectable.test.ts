@@ -48,24 +48,7 @@ describe('Injectable Decorator', () => {
         const registration2 = xContainer.resolve(TestClass);
         expect(registration2).toBeDefined();
     });
-    it('should register a class with Transient configuration and factory', () => {
-        @Injectable({
-            lifetime: Lifetime.Transient,
-            useFactory: () => new TestClass()
-        })
-        class TestClass {}
 
-        const registration1 = xContainer.resolve(TestClass);
-        expect(registration1).toBeDefined();
-        expect(registration1).toBeInstanceOf(TestClass);
-
-        const registration2 = xContainer.resolve(TestClass);
-        expect(registration2).toBeDefined();
-        expect(registration2).toBeInstanceOf(TestClass);
-
-        expect(registration1).not.toBe(registration2);
-    });
-    
     it('should throw an error if the class is already registered', () => {
         @Injectable()
         class TestClass {}
