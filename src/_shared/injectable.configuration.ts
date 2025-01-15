@@ -10,7 +10,7 @@ export interface IInjectableConfiguration {
     /**
      * The lifetime of the injectable.
      */
-    lifetime: Lifetime;
+    lifetime?: Lifetime;
 
     /**
      * Optional token that represents an interface that can be used to resolve this injectable.

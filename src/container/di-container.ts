@@ -17,19 +17,21 @@ class DependencyInjectionContainer {
      * @throws {Error} If a dependency with the same token is already registered.
      * @throws {Error} If a factory is used with a non-singleton lifetime.
      */
-    register<T extends GenericConstructor>(instance: T, dependencyConfiguration: IInjectableConfiguration) {
-      const token = dependencyConfiguration.token ?? (new instance() as any).constructor.name;
+    register<T extends GenericConstructor>(instance: T, dependencyConfiguration: Partial<IInjectableConfiguration> = {}) {
+      const finalInjectableConfiguration = { ...defaultInjectableConfiguration, ...dependencyConfiguration };
+
+      const token = finalInjectableConfiguration.token ?? (new instance() as any).constructor.name;
       if (this.dependencies.has(token)) {
         throw new Error(`Dependency with token ${token} is already registered`);
       }
 
-      if(dependencyConfiguration.lifetime !== Lifetime.Singleton && dependencyConfiguration.useFactory){
+      if(finalInjectableConfiguration.lifetime !== Lifetime.Singleton && finalInjectableConfiguration.useFactory){
         throw new Error("You can only use a factory with singleton lifetime.");
       }
 
       const dependency = {
-          value: this.getInstanceToResolve(dependencyConfiguration, instance),
-          lifetime: dependencyConfiguration.lifetime
+          value: this.getInstanceToResolve(finalInjectableConfiguration, instance),
+          lifetime: finalInjectableConfiguration.lifetime!
       };
 
       this.dependencies.set(
@@ -87,13 +89,17 @@ class DependencyInjectionContainer {
       if (dependencyConfiguration.lifetime === Lifetime.Singleton) {
         instanceToResolve = dependencyConfiguration.useFactory ? dependencyConfiguration.useFactory() : new instance();
       } else {
-        instanceToResolve = instance;
+        instanceToResolve = dependencyConfiguration.useFactory ? dependencyConfiguration.useFactory : instance;
       }
       return instanceToResolve;
     }
   }
   
 type Constructor<T = any> = new (...args: any[]) => T;
+
+const defaultInjectableConfiguration: IInjectableConfiguration = {
+    lifetime: Lifetime.Singleton
+};
 
 /**
  * The `xContainer` is an instance of the `DependencyInjectionContainer` class.
