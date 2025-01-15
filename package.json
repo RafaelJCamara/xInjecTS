@@ -70,7 +70,7 @@
     "ini": "^4.1.1",
     "is-arrayish": "^0.2.1",
     "is-extglob": "^2.1.1",
-    "is-fullwidth-code-point": "^3.0.0",
+    "is-fullwidth-code-point": "^5.0.0",
     "is-glob": "^4.0.3",
     "is-number": "^7.0.0",
     "is-obj": "^2.0.0",
