@@ -1,15 +1,13 @@
 <h1 align="center">
-  docs structure
+  docs
 </h1>
 
-## Documentation
+## Structure
 
-Here you can find in-depth explanation about the source code.
+Inside this `docs` folder, each folder that you'll find corresponds to a specific concern to document.
 
-For more information, click [here](./documentation/documentation.md).
-
-## Samples
-
-Here you can find some samples on how to use the package.
-
-For more information, click [here](./samples/samples.md).
+Here's a simple explanation of the folders:
+| Folder | Description |
+| ----------- | ----------- |
+| [documentation](./documentation/documentation.md) | Here you can find in-depth explanation about the source code. |
+| [samples](./samples/samples.md) | Here you can find some samples on how to use the package. |
