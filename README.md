@@ -75,6 +75,8 @@ console.log(serviceB.greet()); // Output: Hello from ServiceA
 
 For more samples, please refer to our [samples](./docs/samples/samples.md).
 
+To understand in-depth what you can with our library, please also consider looking at our [docs](./docs/documentation/documentation.md).
+
 ## Contributing
 
 This project welcomes and appreciates any contributions made.
